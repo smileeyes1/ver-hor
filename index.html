@@ -108,13 +108,7 @@
 <body>
 
   <div id="container">
-    <h1>يا بطل الرياضيات 💪 جمع ممتع</h1>
-
-    <div id="status">
-      <div>المستوى: <span id="level">١</span></div>
-      <div>النقاط: <span id="score">٠</span></div>
-      <div>الحيوات: <span id="lives">٣</span> ❤️❤️❤️</div>
-    </div>
+    <h1>يا بطل الرياضيات جمع ممتع</h1>
 
     <div id="mode-selection">
       <button class="big-btn green" onclick="startGame('horizontal')">جمع افقي</button>
@@ -122,11 +116,17 @@
     </div>
 
     <div id="game" class="hidden">
+      <div id="status">
+        <div>المستوى: <span id="level">١</span></div>
+        <div>النقاط: <span id="score">٠</span></div>
+        <div>الحيوات: <span id="lives">٣</span> ❤️❤️❤️</div>
+      </div>
+
       <div id="problem" class="problem-box"></div>
 
       <div id="input-area">
         <div class="step">
-          <label>مجموع الاحاد (٠ الى ١٨):</label>
+          <label>مجموع الاحاد اولا (٠ الى ١٨):</label>
           <input type="number" id="ones" min="0" max="18" autocomplete="off">
         </div>
         <div class="buttons">
@@ -135,7 +135,7 @@
         </div>
 
         <div id="tens-step" class="hidden step">
-          <label>مجموع العشرات (مع الحمل):</label>
+          <label>مجموع العشرات (مع الحمل لو موجود):</label>
           <input type="number" id="tens" min="0" max="20" autocomplete="off">
         </div>
         <button id="check" class="action-btn green hidden">تأكد ✓</button>
@@ -197,8 +197,8 @@
     function updateStatus() {
       document.getElementById('level').innerText = level;
       document.getElementById('score').innerText = score;
-      document.getElementById('lives').innerText = lives;
-      document.getElementById('lives').parentNode.innerHTML = `الحيوات: \( {'❤️'.repeat(lives)} \){'🖤'.repeat(3-lives)}`;
+      let hearts = '❤️'.repeat(lives) + '🖤'.repeat(3 - lives);
+      document.getElementById('lives').parentNode.innerHTML = `الحيوات: ${hearts}`;
     }
 
     function backToMenu() {
@@ -275,7 +275,7 @@
       attempts++;
 
       if (ans === correctOnes) {
-        document.getElementById('feedback').innerHTML = 'احسنت! الان العشرات';
+        document.getElementById('feedback').innerHTML = 'احسنت! الان نكمل العشرات';
         document.getElementById('tens-step').classList.remove('hidden');
         document.getElementById('check').classList.remove('hidden');
         document.getElementById('nextStep').classList.add('hidden');
@@ -323,7 +323,6 @@
       }
     }
 
-    // ربط الازرار
     document.getElementById('nextStep').onclick = checkOnes;
     document.getElementById('check').onclick = checkTens;
     document.getElementById('helpBtn').onclick = showHint;
