@@ -1,4 +1,4 @@
-
+ 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -26,18 +26,25 @@ body{
 h1{ color:#b85c1e; }
 h2{ color:#8b4513; }
 
+.character{
+  font-size:60px;
+  margin:10px;
+}
+
 .sum-box{
   font-size:44px;
-  width:240px;
+  width:260px;
   margin:30px auto;
   position:relative;
 }
 
+/* ✅ ترتيب صحيح: الآحاد يمين – العشرات يسار */
 .row{
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row-reverse; /* ✅ الآحاد يمين – العشرات يسار */
+  display:flex;
+  justify-content:space-between;
+  flex-direction:row-reverse;
 }
+
 .line{
   border-top:4px solid black;
   margin:10px 0;
@@ -45,13 +52,14 @@ h2{ color:#8b4513; }
 
 .carry{
   position:absolute;
-  top:80px;
-  right:80px;
+  top:85px;
+  right:130px;
   font-size:34px;
   opacity:0;
   transition:all 1s ease;
 }
 
+/* ✅ إدخال الإجابة بدون قلب */
 input{
   font-size:30px;
   padding:10px;
@@ -59,6 +67,7 @@ input{
   border-radius:12px;
   border:2px solid #4682b4;
   text-align:center;
+  direction:ltr;
 }
 
 button{
@@ -80,10 +89,6 @@ button:hover{ background:#1873d1; }
   margin-top:15px;
   color:#006400;
 }
-
-.character{
-  font-size:60px;
-}
 </style>
 </head>
 
@@ -96,23 +101,26 @@ button:hover{ background:#1873d1; }
 
 <div class="character">👦✨</div>
 
-<!-- الجمع العمودي فقط (لأنه التعليمي الأهم) -->
 <h2>الجمع العمودي مع الحمل</h2>
 
 <div class="sum-box">
   <div class="carry" id="carry">١</div>
 
   <div class="row">
-    <span id="t1"></span><span id="o1"></span>
+    <span id="o1"></span>
+    <span id="t1"></span>
   </div>
+
   <div class="row">
-    <span id="t2"></span><span id="o2"></span>
+    <span id="o2"></span>
+    <span id="t2"></span>
   </div>
 
   <div class="line"></div>
 
   <div class="row">
-    <span id="tR"></span><span id="oR"></span>
+    <span id="oR"></span>
+    <span id="tR"></span>
   </div>
 </div>
 
@@ -122,9 +130,9 @@ button:hover{ background:#1873d1; }
 
 <div id="message"></div>
 
-<!-- صوت طيران -->
+<!-- 🔊 صوت طيران -->
 <audio id="flySound">
-  data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQQAAAAA
+  data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=
 </audio>
 
 </div>
@@ -154,7 +162,7 @@ function newQuestion(){
   document.getElementById("carry").style.opacity=0;
   document.getElementById("answer").value="";
 
-  // ✅ الخطوة الأولى (الشرح)
+  // ✅ الخطوة الأولى: الشرح
   document.getElementById("message").innerText =
     "🔔 نبدأ دائمًا بجمع الآحاد مع الآحاد";
 }
@@ -171,22 +179,25 @@ function check(){
   let onesSum=(a%10)+(b%10);
 
   if(onesSum>=10){
-    // ✅ الخطوة الثانية (الشرح + الصوت + الطيران)
+    // ✅ الخطوة الثانية: الحمل
     document.getElementById("message").innerText =
       "✨ المجموع أكبر من ٩ → الواحد يطير إلى العشرات ✈️";
 
     let c=document.getElementById("carry");
     c.style.opacity=1;
-    c.style.top="20px";
-    c.style.right="140px";
+    c.style.top="25px";
+    c.style.right="175px";
 
     document.getElementById("flySound").play();
+  }else{
+    document.getElementById("message").innerText =
+      "✅ الآحاد أقل من ١٠، لا يوجد حمل";
   }
 
   document.getElementById("oR").innerText=ar(sum%10);
   document.getElementById("tR").innerText=ar(Math.floor(sum/10));
 
-  setTimeout(newQuestion,2000);
+  setTimeout(newQuestion,2500);
 }
 
 newQuestion();
