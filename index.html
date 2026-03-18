@@ -1,196 +1,209 @@
+ 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لعبة الجمع خطوة بخطوة</title>
-  https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة الجمع خطوة بخطوة</title>
 
-  <style>
-    body {
-      font-family: 'Cairo', sans-serif;
-      background: linear-gradient(to bottom, #e1f5fe, #b3e5fc);
-      text-align: center;
-      padding: 20px;
-      min-height: 100vh;
-      direction: rtl;
-    }
+https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap
 
-    h1 {
-      color: #d81b60;
-      font-size: 2.5rem;
-      margin: 20px 0;
-    }
+<style>
+body{
+  font-family:'Cairo',sans-serif;
+  background:linear-gradient(#e3f2fd,#bbdefb);
+  text-align:center;
+  padding:20px;
+}
 
-    .problem {
-      font-size: 4rem;
-      background: white;
-      padding: 25px;
-      border-radius: 15px;
-      margin: 30px auto;
-      max-width: 600px;
-      box-shadow: 0 5px 15px #ccc;
-    }
+.header{
+  background:#ffffff;
+  padding:15px;
+  border-radius:15px;
+  margin-bottom:20px;
+}
 
-    .instruction {
-      font-size: 1.8rem;
-      color: #1976d2;
-      margin: 25px 0;
-      font-weight: bold;
-    }
+.school{font-size:1.4rem;color:#1565c0;font-weight:bold;}
+.teacher{font-size:1.2rem;color:#2e7d32;margin-top:5px;}
 
-    input {
-      font-size: 3rem;
-      width: 120px;
-      text-align: center;
-      border: 4px solid #4caf50;
-      border-radius: 12px;
-      padding: 8px;
-      margin: 15px;
-    }
+h1{color:#d81b60;font-size:2.2rem;margin:15px 0;}
 
-    button {
-      font-size: 1.5rem;
-      padding: 12px 40px;
-      margin: 15px;
-      background: #4caf50;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
+.mode{
+  margin:15px;
+}
+.mode button{
+  font-size:1.2rem;
+  padding:10px 20px;
+  margin:5px;
+  border:none;
+  border-radius:10px;
+  background:#ff9800;
+  color:white;
+  cursor:pointer;
+}
+.mode button.active{background:#f57c00;}
 
-    button:hover {
-      background: #388e3c;
-    }
+.problem{
+  font-size:3.5rem;
+  background:white;
+  padding:25px;
+  border-radius:20px;
+  margin:25px auto;
+  width:fit-content;
+}
 
-    #feedback {
-      font-size: 2.2rem;
-      margin: 30px 0;
-      min-height: 100px;
-      font-weight: bold;
-      color: #2e7d32;
-    }
+.vertical{
+  display:inline-block;
+  text-align:right;
+}
 
-    .hidden {
-      display: none;
-    }
-  </style>
+.instruction{
+  font-size:1.6rem;
+  color:#1976d2;
+  margin:20px 0;
+  font-weight:bold;
+}
+
+input{
+  font-size:2.5rem;
+  width:140px;
+  text-align:center;
+  border:4px solid #4caf50;
+  border-radius:12px;
+  padding:8px;
+}
+
+button.action{
+  font-size:1.4rem;
+  padding:10px 35px;
+  margin:15px;
+  background:#4caf50;
+  color:white;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+}
+
+#feedback{
+  font-size:2rem;
+  min-height:90px;
+  margin-top:20px;
+  font-weight:bold;
+  color:#2e7d32;
+}
+
+.hidden{display:none;}
+</style>
 </head>
 
 <body>
 
-  <h1>يا بطل نتعلم الجمع خطوة بخطوة</h1>
+<div class="header">
+  <div class="school">مدرسة يوسف اليعقوب</div>
+  <div class="teacher">المعلم: محمد وجيه محمود غنام</div>
+</div>
 
-  <div class="problem" id="problem"></div>
+<h1>يا بطل نتعلم الجمع خطوة بخطوة</h1>
 
-  <div class="instruction">
-    مجموع الآحاد فقط ؟<br>
-    (الرقم الأيمن من كل عدد)
-  </div>
+<div class="mode">
+  <button id="hBtn" class="active" onclick="setMode('h')">جمع أفقي</button>
+  <button id="vBtn" onclick="setMode('v')">جمع عمودي</button>
+</div>
 
-  <input type="text" id="onesInput" inputmode="numeric" autocomplete="off">
+<div class="problem" id="problem"></div>
 
-  <div>
-    <button onclick="checkOnes()">التالي</button>
-  </div>
+<div class="instruction">
+مجموع الآحاد فقط ؟
+</div>
 
-  <div id="step2" class="hidden">
-    <div class="instruction">
-      مجموع العشرات ؟<br>
-      (مع الحمل إن وجد)
-    </div>
+<input type="text" id="onesInput" inputmode="numeric">
+<br>
+<button class="action" onclick="checkOnes()">التالي</button>
 
-    <input type="text" id="tensInput" inputmode="numeric" autocomplete="off">
-    <br>
-    <button onclick="checkAnswer()">تأكد من الجواب</button>
-  </div>
+<div id="step2" class="hidden">
+  <div class="instruction">مجموع العشرات ؟</div>
+  <input type="text" id="tensInput" inputmode="numeric">
+  <br>
+  <button class="action" onclick="checkTens()">تأكد</button>
+</div>
 
-  <div id="feedback"></div>
+<div id="feedback"></div>
 
-  <script>
-    // تحويل الأرقام إلى عربية شرقية للعرض
-    function ar(n) {
-      return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
-    }
+<script>
+function ar(n){
+  return n.toString().replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+}
+function en(s){
+  return s.replace(/[٠-٩]/g,d=>"0123456789"["٠١٢٣٤٥٦٧٨٩".indexOf(d)]);
+}
 
-    // تحويل الأرقام العربية الشرقية إلى إنجليزية للحساب
-    function toEnglishDigits(str) {
-      return str.replace(/[٠-٩]/g, d =>
-        "0123456789"["٠١٢٣٤٥٦٧٨٩".indexOf(d)]
-      );
-    }
+let a,b,onesSum,tensSum,mode='h';
 
-    let عدد1, عدد2;
-    let مجموع_الاحاد, مجموع_العشرات;
+function setMode(m){
+  mode=m;
+  document.getElementById('hBtn').classList.toggle('active',m==='h');
+  document.getElementById('vBtn').classList.toggle('active',m==='v');
+  draw();
+}
 
-    function تمرين_جديد() {
-      عدد1 = Math.floor(Math.random() * 40) + 10;
-      عدد2 = Math.floor(Math.random() * 40) + 10;
+function newExercise(){
+  a=Math.floor(Math.random()*40)+10;
+  b=Math.floor(Math.random()*40)+10;
 
-      let احد1 = عدد1 % 10;
-      let احد2 = عدد2 % 10;
-      let عشرات1 = Math.floor(عدد1 / 10);
-      let عشرات2 = Math.floor(عدد2 / 10);
+  let oa=a%10, ob=b%10;
+  let ta=Math.floor(a/10), tb=Math.floor(b/10);
 
-      مجموع_الاحاد = احد1 + احد2;
-      let الحمل = Math.floor(مجموع_الاحاد / 10);
-      مجموع_العشرات = عشرات1 + عشرات2 + الحمل;
+  onesSum=oa+ob;
+  let carry=Math.floor(onesSum/10);
+  tensSum=ta+tb+carry;
 
-      document.getElementById("problem").innerHTML =
-        ar(عدد1) + " + " + ar(عدد2) + " = ؟";
+  document.getElementById('onesInput').value='';
+  document.getElementById('tensInput').value='';
+  document.getElementById('step2').classList.add('hidden');
+  document.getElementById('feedback').innerHTML='';
 
-      document.getElementById("onesInput").value = "";
-      document.getElementById("tensInput").value = "";
-      document.getElementById("step2").classList.add("hidden");
-      document.getElementById("feedback").innerHTML = "";
-    }
+  draw();
+}
 
-    function checkOnes() {
-      let raw = document.getElementById("onesInput").value;
-      let المدخل = parseInt(toEnglishDigits(raw));
+function draw(){
+  let p=document.getElementById('problem');
+  if(mode==='h'){
+    p.innerHTML=ar(a)+' + '+ar(b);
+  }else{
+    p.innerHTML=
+    `<div class="vertical">
+      ${ar(a)}<br>
+      + ${ar(b)}<br>
+      ───
+    </div>`;
+  }
+}
 
-      if (isNaN(المدخل)) {
-        document.getElementById("feedback").innerHTML = "اكتب رقم يا بطل";
-        return;
-      }
+function checkOnes(){
+  let v=parseInt(en(onesInput.value));
+  if(isNaN(v)){feedback.innerHTML='اكتب رقم';return;}
+  if(v===onesSum){
+    feedback.innerHTML='أحسنت ✅';
+    step2.classList.remove('hidden');
+  }else{
+    feedback.innerHTML='راجع الرقم الأيمن فقط';
+  }
+}
 
-      if (المدخل === مجموع_الاحاد) {
-        document.getElementById("feedback").innerHTML = "أحسنت 👏 مجموع الآحاد صحيح";
-        document.getElementById("step2").classList.remove("hidden");
-      } else {
-        document.getElementById("feedback").innerHTML =
-          "فكّر في الرقم الأيمن من كل عدد فقط";
-      }
-    }
+function checkTens(){
+  let v=parseInt(en(tensInput.value));
+  let full=tensSum*10+(onesSum%10);
+  if(v===tensSum){
+    feedback.innerHTML='ممتاز 🌟<br>الجواب: '+ar(full);
+    setTimeout(newExercise,4000);
+  }else{
+    feedback.innerHTML='حاول مرة أخرى<br>الجواب: '+ar(full);
+  }
+}
 
-    function checkAnswer() {
-      let raw = document.getElementById("tensInput").value;
-      let المدخل = parseInt(toEnglishDigits(raw));
-
-      if (isNaN(المدخل)) {
-        document.getElementById("feedback").innerHTML = "اكتب مجموع العشرات";
-        return;
-      }
-
-      let الجواب_الكامل =
-        مجموع_العشرات * 10 + (مجموع_الاحاد % 10);
-
-      if (المدخل === مجموع_العشرات) {
-        document.getElementById("feedback").innerHTML =
-          "ممتاز جدًا يا نجم 🌟<br>" +
-          "الجواب الكامل هو " + ar(الجواب_الكامل);
-
-        setTimeout(تمرين_جديد, 4000);
-      } else {
-        document.getElementById("feedback").innerHTML =
-          "راجع العشرات مع الحمل<br>" +
-          "الجواب الصحيح هو " + ar(الجواب_الكامل);
-      }
-    }
-
-    تمرين_جديد();
-  </script>
+newExercise();
+</script>
 
 </body>
 </html>
+ 
