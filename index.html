@@ -1,4 +1,4 @@
- 
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -14,8 +14,6 @@ body{
   padding: 20px;
 }
 
-h1,h2{ color:#b85c1e; }
-
 .card{
   background:white;
   border-radius:20px;
@@ -25,19 +23,8 @@ h1,h2{ color:#b85c1e; }
   box-shadow:0 10px 25px rgba(0,0,0,.15);
 }
 
-button{
-  font-size:26px;
-  padding:14px 40px;
-  margin:10px;
-  border:none;
-  border-radius:15px;
-  background:#1e90ff;
-  color:white;
-  cursor:pointer;
-}
-button:hover{ background:#1873d1; }
-
-.section{ display:none; }
+h1{ color:#b85c1e; }
+h2{ color:#8b4513; }
 
 .sum-box{
   font-size:44px;
@@ -58,8 +45,8 @@ button:hover{ background:#1873d1; }
 
 .carry{
   position:absolute;
-  top:75px;
-  right:75px;
+  top:80px;
+  right:80px;
   font-size:34px;
   opacity:0;
   transition:all 1s ease;
@@ -74,19 +61,29 @@ input{
   text-align:center;
 }
 
-#points{
-  font-size:28px;
+button{
+  font-size:26px;
+  padding:14px 40px;
+  margin:10px;
+  border:none;
+  border-radius:15px;
+  background:#1e90ff;
+  color:white;
+  cursor:pointer;
+}
+
+button:hover{ background:#1873d1; }
+
+#message{
+  font-size:26px;
+  min-height:60px;
+  margin-top:15px;
   color:#006400;
-  margin-top:10px;
 }
 
 .character{
   font-size:60px;
-  margin:10px;
 }
-
-.green{color:green}
-.red{color:darkred}
 </style>
 </head>
 
@@ -99,133 +96,100 @@ input{
 
 <div class="character">👦✨</div>
 
-<div id="menu">
-  <button onclick="start('horizontal')">➕ جمع أفقي</button>
-  <button onclick="start('vertical')">➕ جمع عمودي</button>
-</div>
+<!-- الجمع العمودي فقط (لأنه التعليمي الأهم) -->
+<h2>الجمع العمودي مع الحمل</h2>
 
-<div id="points">⭐ النقاط: <span id="score">٠</span></div>
+<div class="sum-box">
+  <div class="carry" id="carry">١</div>
 
-<!-- الجمع الأفقي -->
-<div id="horizontal" class="section">
-  <h2>الجمع الأفقي</h2>
-  <div id="h-question" style="font-size:38px;"></div>
-  <input id="h-answer" placeholder="اكتب الجواب">
-  <br>
-  <button onclick="checkH()">تحقق ✅</button>
-  <div id="h-result"></div>
-</div>
-
-<!-- الجمع العمودي -->
-<div id="vertical" class="section">
-  <h2>الجمع العمودي مع الحمل</h2>
-
-  <div class="sum-box">
-    <div class="carry" id="carry">١</div>
-
-    <div class="row">
-      <span id="t1"></span><span id="o1"></span>
-    </div>
-    <div class="row">
-      <span id="t2"></span><span id="o2"></span>
-    </div>
-
-    <div class="line"></div>
-
-    <div class="row">
-      <span id="tR"></span><span id="oR"></span>
-    </div>
+  <div class="row">
+    <span id="t1"></span><span id="o1"></span>
+  </div>
+  <div class="row">
+    <span id="t2"></span><span id="o2"></span>
   </div>
 
-  <input id="v-answer" placeholder="اكتب الجواب">
-  <br>
-  <button onclick="checkV()">اجمع ✨</button>
-  <div id="v-result"></div>
+  <div class="line"></div>
+
+  <div class="row">
+    <span id="tR"></span><span id="oR"></span>
+  </div>
 </div>
+
+<input id="answer" placeholder="اكتب الجواب">
+<br>
+<button onclick="check()">تحقق ✅</button>
+
+<div id="message"></div>
+
+<!-- صوت طيران -->
+<audio id="flySound">
+  data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQQAAAAA
+</audio>
 
 </div>
 
 <script>
-let a,b,mode,score=0;
+let a,b;
 
 function ar(n){
   const d=['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
   return n.toString().split('').map(x=>d[x]).join('');
 }
 
-function start(m){
-  mode=m;
-  document.getElementById("menu").style.display="none";
-  document.getElementById(m).style.display="block";
-  newQ();
-}
-
-function newQ(){
+function newQuestion(){
   a=Math.floor(Math.random()*40)+10;
   b=Math.floor(Math.random()*40)+10;
 
-  if(mode==="horizontal"){
-    document.getElementById("h-question").innerText=
-      `${ar(a)} + ${ar(b)} = ؟`;
-    document.getElementById("h-answer").value="";
-    document.getElementById("h-result").innerText="";
-  }
+  let aT=Math.floor(a/10), aO=a%10;
+  let bT=Math.floor(b/10), bO=b%10;
 
-  if(mode==="vertical"){
-    document.getElementById("carry").style.opacity=0;
-    let aT=Math.floor(a/10), aO=a%10;
-    let bT=Math.floor(b/10), bO=b%10;
-    document.getElementById("t1").innerText=ar(aT);
-    document.getElementById("o1").innerText=ar(aO);
-    document.getElementById("t2").innerText=ar(bT);
-    document.getElementById("o2").innerText=ar(bO);
-    document.getElementById("tR").innerText="";
-    document.getElementById("oR").innerText="";
-    document.getElementById("v-answer").value="";
-    document.getElementById("v-result").innerText="";
-  }
+  document.getElementById("t1").innerText=ar(aT);
+  document.getElementById("o1").innerText=ar(aO);
+  document.getElementById("t2").innerText=ar(bT);
+  document.getElementById("o2").innerText=ar(bO);
+
+  document.getElementById("tR").innerText="";
+  document.getElementById("oR").innerText="";
+  document.getElementById("carry").style.opacity=0;
+  document.getElementById("answer").value="";
+
+  // ✅ الخطوة الأولى (الشرح)
+  document.getElementById("message").innerText =
+    "🔔 نبدأ دائمًا بجمع الآحاد مع الآحاد";
 }
 
-function addPoint(){
-  score++;
-  document.getElementById("score").innerText=ar(score);
-}
-
-function checkH(){
-  let v=parseInt(document.getElementById("h-answer").value);
-  if(v===a+b){
-    addPoint();
-    document.getElementById("h-result").innerText="✅ أحسنت يا بطل!";
-    document.getElementById("h-result").className="green";
-    setTimeout(newQ,1200);
-  }else{
-    document.getElementById("h-result").innerText="❌ حاول مرة أخرى";
-    document.getElementById("h-result").className="red";
-  }
-}
-
-function checkV(){
-  let v=parseInt(document.getElementById("v-answer").value);
+function check(){
+  let v=parseInt(document.getElementById("answer").value);
   let sum=a+b;
 
-  if(v===sum){
-    if((a%10)+(b%10)>=10){
-      let c=document.getElementById("carry");
-      c.style.opacity=1;
-      c.style.top="20px";
-      c.style.right="140px";
-    }
-    document.getElementById("oR").innerText=ar(sum%10);
-    document.getElementById("tR").innerText=ar(Math.floor(sum/10));
-    addPoint();
-    document.getElementById("v-result").innerText="🎉 رائع! استمر";
-    document.getElementById("v-result").className="green";
-    setTimeout(newQ,1500);
-  }else{
-    document.getElementById("v-result").innerText="❌ حاول مرة ثانية";
-    document.getElementById("v-result").className="red";
+  if(v!==sum){
+    document.getElementById("message").innerText="❌ حاول مرة أخرى";
+    return;
   }
+
+  let onesSum=(a%10)+(b%10);
+
+  if(onesSum>=10){
+    // ✅ الخطوة الثانية (الشرح + الصوت + الطيران)
+    document.getElementById("message").innerText =
+      "✨ المجموع أكبر من ٩ → الواحد يطير إلى العشرات ✈️";
+
+    let c=document.getElementById("carry");
+    c.style.opacity=1;
+    c.style.top="20px";
+    c.style.right="140px";
+
+    document.getElementById("flySound").play();
+  }
+
+  document.getElementById("oR").innerText=ar(sum%10);
+  document.getElementById("tR").innerText=ar(Math.floor(sum/10));
+
+  setTimeout(newQuestion,2000);
 }
+
+newQuestion();
 </script>
 
 </body>
