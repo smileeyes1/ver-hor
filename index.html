@@ -1,0 +1,232 @@
+ 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة الجمع السحري</title>
+
+<style>
+body{
+  font-family: Tahoma, Arial;
+  background: linear-gradient(#fffce8,#ffe9b5);
+  text-align: center;
+  padding: 20px;
+}
+
+h1,h2{ color:#b85c1e; }
+
+.card{
+  background:white;
+  border-radius:20px;
+  padding:25px;
+  max-width:720px;
+  margin:auto;
+  box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+button{
+  font-size:26px;
+  padding:14px 40px;
+  margin:10px;
+  border:none;
+  border-radius:15px;
+  background:#1e90ff;
+  color:white;
+  cursor:pointer;
+}
+button:hover{ background:#1873d1; }
+
+.section{ display:none; }
+
+.sum-box{
+  font-size:44px;
+  width:240px;
+  margin:30px auto;
+  position:relative;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+}
+
+.line{
+  border-top:4px solid black;
+  margin:10px 0;
+}
+
+.carry{
+  position:absolute;
+  top:75px;
+  right:75px;
+  font-size:34px;
+  opacity:0;
+  transition:all 1s ease;
+}
+
+input{
+  font-size:30px;
+  padding:10px;
+  width:180px;
+  border-radius:12px;
+  border:2px solid #4682b4;
+  text-align:center;
+}
+
+#points{
+  font-size:28px;
+  color:#006400;
+  margin-top:10px;
+}
+
+.character{
+  font-size:60px;
+  margin:10px;
+}
+
+.green{color:green}
+.red{color:darkred}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>🎮 لعبة الجمع السحري</h1>
+<h2>المعلّم محمد وجية<br>مدرسة عاطوف المختلطة</h2>
+
+<div class="character">👦✨</div>
+
+<div id="menu">
+  <button onclick="start('horizontal')">➕ جمع أفقي</button>
+  <button onclick="start('vertical')">➕ جمع عمودي</button>
+</div>
+
+<div id="points">⭐ النقاط: <span id="score">٠</span></div>
+
+<!-- الجمع الأفقي -->
+<div id="horizontal" class="section">
+  <h2>الجمع الأفقي</h2>
+  <div id="h-question" style="font-size:38px;"></div>
+  <input id="h-answer" placeholder="اكتب الجواب">
+  <br>
+  <button onclick="checkH()">تحقق ✅</button>
+  <div id="h-result"></div>
+</div>
+
+<!-- الجمع العمودي -->
+<div id="vertical" class="section">
+  <h2>الجمع العمودي مع الحمل</h2>
+
+  <div class="sum-box">
+    <div class="carry" id="carry">١</div>
+
+    <div class="row">
+      <span id="t1"></span><span id="o1"></span>
+    </div>
+    <div class="row">
+      <span id="t2"></span><span id="o2"></span>
+    </div>
+
+    <div class="line"></div>
+
+    <div class="row">
+      <span id="tR"></span><span id="oR"></span>
+    </div>
+  </div>
+
+  <input id="v-answer" placeholder="اكتب الجواب">
+  <br>
+  <button onclick="checkV()">اجمع ✨</button>
+  <div id="v-result"></div>
+</div>
+
+</div>
+
+<script>
+let a,b,mode,score=0;
+
+function ar(n){
+  const d=['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  return n.toString().split('').map(x=>d[x]).join('');
+}
+
+function start(m){
+  mode=m;
+  document.getElementById("menu").style.display="none";
+  document.getElementById(m).style.display="block";
+  newQ();
+}
+
+function newQ(){
+  a=Math.floor(Math.random()*40)+10;
+  b=Math.floor(Math.random()*40)+10;
+
+  if(mode==="horizontal"){
+    document.getElementById("h-question").innerText=
+      `${ar(a)} + ${ar(b)} = ؟`;
+    document.getElementById("h-answer").value="";
+    document.getElementById("h-result").innerText="";
+  }
+
+  if(mode==="vertical"){
+    document.getElementById("carry").style.opacity=0;
+    let aT=Math.floor(a/10), aO=a%10;
+    let bT=Math.floor(b/10), bO=b%10;
+    document.getElementById("t1").innerText=ar(aT);
+    document.getElementById("o1").innerText=ar(aO);
+    document.getElementById("t2").innerText=ar(bT);
+    document.getElementById("o2").innerText=ar(bO);
+    document.getElementById("tR").innerText="";
+    document.getElementById("oR").innerText="";
+    document.getElementById("v-answer").value="";
+    document.getElementById("v-result").innerText="";
+  }
+}
+
+function addPoint(){
+  score++;
+  document.getElementById("score").innerText=ar(score);
+}
+
+function checkH(){
+  let v=parseInt(document.getElementById("h-answer").value);
+  if(v===a+b){
+    addPoint();
+    document.getElementById("h-result").innerText="✅ أحسنت يا بطل!";
+    document.getElementById("h-result").className="green";
+    setTimeout(newQ,1200);
+  }else{
+    document.getElementById("h-result").innerText="❌ حاول مرة أخرى";
+    document.getElementById("h-result").className="red";
+  }
+}
+
+function checkV(){
+  let v=parseInt(document.getElementById("v-answer").value);
+  let sum=a+b;
+
+  if(v===sum){
+    if((a%10)+(b%10)>=10){
+      let c=document.getElementById("carry");
+      c.style.opacity=1;
+      c.style.top="20px";
+      c.style.right="140px";
+    }
+    document.getElementById("oR").innerText=ar(sum%10);
+    document.getElementById("tR").innerText=ar(Math.floor(sum/10));
+    addPoint();
+    document.getElementById("v-result").innerText="🎉 رائع! استمر";
+    document.getElementById("v-result").className="green";
+    setTimeout(newQ,1500);
+  }else{
+    document.getElementById("v-result").innerText="❌ حاول مرة ثانية";
+    document.getElementById("v-result").className="red";
+  }
+}
+</script>
+
+</body>
+</html>
