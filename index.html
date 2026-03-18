@@ -1,207 +1,332 @@
- 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لعبة الجمع السحري</title>
-
-<style>
-body{
-  font-family: Tahoma, Arial;
-  background: linear-gradient(#fffce8,#ffe9b5);
-  text-align: center;
-  padding: 20px;
-}
-
-.card{
-  background:white;
-  border-radius:20px;
-  padding:25px;
-  max-width:720px;
-  margin:auto;
-  box-shadow:0 10px 25px rgba(0,0,0,.15);
-}
-
-h1{ color:#b85c1e; }
-h2{ color:#8b4513; }
-
-.character{
-  font-size:60px;
-  margin:10px;
-}
-
-.sum-box{
-  font-size:44px;
-  width:260px;
-  margin:30px auto;
-  position:relative;
-}
-
-/* ✅ ترتيب صحيح: الآحاد يمين – العشرات يسار */
-.row{
-  display:flex;
-  justify-content:space-between;
-  flex-direction:row-reverse;
-}
-
-.line{
-  border-top:4px solid black;
-  margin:10px 0;
-}
-
-.carry{
-  position:absolute;
-  top:85px;
-  right:130px;
-  font-size:34px;
-  opacity:0;
-  transition:all 1s ease;
-}
-
-/* ✅ إدخال الإجابة بدون قلب */
-input{
-  font-size:30px;
-  padding:10px;
-  width:180px;
-  border-radius:12px;
-  border:2px solid #4682b4;
-  text-align:center;
-  direction:ltr;
-}
-
-button{
-  font-size:26px;
-  padding:14px 40px;
-  margin:10px;
-  border:none;
-  border-radius:15px;
-  background:#1e90ff;
-  color:white;
-  cursor:pointer;
-}
-
-button:hover{ background:#1873d1; }
-
-#message{
-  font-size:26px;
-  min-height:60px;
-  margin-top:15px;
-  color:#006400;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لعبة الجمع الممتعة مع الحمل</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(to bottom, #e1f5fe, #b3e5fc);
+      text-align:center;
+      padding:20px;
+      min-height:100vh;
+      direction:rtl;
+    }
+    #container { max-width:720px; margin:0 auto; }
+    h1 { color:#d81b60; font-size:2.6rem; margin:20px 0; }
+    #status {
+      display:flex;
+      justify-content:space-around;
+      font-size:1.4rem;
+      margin:20px 0;
+      color:#1976d2;
+      font-weight:bold;
+    }
+    .big-btn {
+      padding:18px 60px;
+      font-size:1.9rem;
+      margin:25px 15px;
+      border:none;
+      border-radius:16px;
+      color:white;
+      cursor:pointer;
+      box-shadow:0 6px 12px rgba(0,0,0,0.2);
+      transition: all 0.2s;
+    }
+    .big-btn:hover { transform:scale(1.08); }
+    .green { background:#4caf50; }
+    .blue  { background:#2196f3; }
+    .problem-box {
+      font-size:4.2rem;
+      background:white;
+      padding:25px;
+      margin:30px auto;
+      border-radius:20px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.15);
+      min-height:140px;
+      max-width:580px;
+    }
+    .step { font-size:1.7rem; margin:25px 0; }
+    input {
+      width:110px;
+      font-size:2.8rem;
+      text-align:center;
+      border:4px solid #66bb6a;
+      border-radius:12px;
+      padding:8px;
+      margin:10px;
+    }
+    .action-btn, .help-btn {
+      padding:12px 35px;
+      font-size:1.5rem;
+      margin:12px;
+      border:none;
+      border-radius:12px;
+      color:white;
+      cursor:pointer;
+    }
+    .action-btn.green { background:#4caf50; }
+    .help-btn { background:#ff9800; }
+    .feedback {
+      font-size:2.1rem;
+      min-height:70px;
+      margin:25px 0;
+      font-weight:bold;
+      color:#2e7d32;
+    }
+    .hint {
+      font-size:1.5rem;
+      color:#e65100;
+      margin:15px;
+      padding:12px;
+      background:#fff3e0;
+      border-radius:12px;
+    }
+    .animation {
+      font-size:6rem;
+      animation: bounce 1.2s;
+    }
+    @keyframes bounce {
+      0%,100% { transform:scale(0.5); opacity:0; }
+      50%     { transform:scale(1.4); opacity:1; }
+    }
+    .hidden { display:none; }
+    .small-btn {
+      padding:10px 30px;
+      font-size:1.3rem;
+      margin:15px;
+      background:#757575;
+      color:white;
+      border:none;
+      border-radius:10px;
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="card">
+  <div id="container">
+    <h1>يا بطل الرياضيات 💪 جمع ممتع</h1>
 
-<h1>🎮 لعبة الجمع السحري</h1>
-<h2>المعلّم محمد وجية<br>مدرسة عاطوف المختلطة</h2>
+    <div id="status">
+      <div>المستوى: <span id="level">١</span></div>
+      <div>النقاط: <span id="score">٠</span></div>
+      <div>الحيوات: <span id="lives">٣</span> ❤️❤️❤️</div>
+    </div>
 
-<div class="character">👦✨</div>
+    <div id="mode-selection">
+      <button class="big-btn green" onclick="startGame('horizontal')">جمع افقي</button>
+      <button class="big-btn blue" onclick="startGame('vertical')">جمع عمودي</button>
+    </div>
 
-<h2>الجمع العمودي مع الحمل</h2>
+    <div id="game" class="hidden">
+      <div id="problem" class="problem-box"></div>
 
-<div class="sum-box">
-  <div class="carry" id="carry">١</div>
+      <div id="input-area">
+        <div class="step">
+          <label>مجموع الاحاد (٠ الى ١٨):</label>
+          <input type="number" id="ones" min="0" max="18" autocomplete="off">
+        </div>
+        <div class="buttons">
+          <button id="nextStep" class="action-btn">التالي</button>
+          <button id="helpBtn" class="help-btn">مساعدة ؟</button>
+        </div>
 
-  <div class="row">
-    <span id="o1"></span>
-    <span id="t1"></span>
+        <div id="tens-step" class="hidden step">
+          <label>مجموع العشرات (مع الحمل):</label>
+          <input type="number" id="tens" min="0" max="20" autocomplete="off">
+        </div>
+        <button id="check" class="action-btn green hidden">تأكد ✓</button>
+
+        <div id="hint" class="hint hidden"></div>
+      </div>
+
+      <div id="feedback" class="feedback"></div>
+      <div id="animation" class="animation hidden">🌟✨🎉</div>
+
+      <div id="game-over" class="hidden">
+        <h2>انتهت الحيوات 😢</h2>
+        <p>نقاطك النهائية: <strong id="final-score">٠</strong></p>
+        <button class="big-btn" onclick="restartGame()">العب من جديد</button>
+      </div>
+
+      <button class="small-btn" onclick="backToMenu()">رجوع للصفحة الرئيسية</button>
+    </div>
   </div>
 
-  <div class="row">
-    <span id="o2"></span>
-    <span id="t2"></span>
-  </div>
+  <script>
+    let score = 0;
+    let level = 1;
+    let lives = 3;
+    let currentMode = '';
+    let num1 = 0, num2 = 0;
+    let correctOnes = 0, correctTens = 0;
+    let attempts = 0;
 
-  <div class="line"></div>
+    const goodWords = [
+      "يا سلام عليك يا بطل",
+      "ممتاز جدا جدا",
+      "صحيح تمام يا وحش",
+      "برافو عليك استمر",
+      "ما شاء الله عليك",
+      "انت ذكي وسريع",
+      "رائع يا نجم",
+      "قلبي فرحان معاك",
+      "احسنت يا غالي",
+      "استمر هكذا دائما"
+    ];
 
-  <div class="row">
-    <span id="oR"></span>
-    <span id="tR"></span>
-  </div>
-</div>
+    function startGame(mode) {
+      currentMode = mode;
+      document.getElementById('mode-selection').classList.add('hidden');
+      document.getElementById('game').classList.remove('hidden');
+      document.getElementById('game-over').classList.add('hidden');
+      resetStats();
+      newProblem();
+    }
 
-<input id="answer" placeholder="اكتب الجواب">
-<br>
-<button onclick="check()">تحقق ✅</button>
+    function resetStats() {
+      score = 0;
+      level = 1;
+      lives = 3;
+      updateStatus();
+    }
 
-<div id="message"></div>
+    function updateStatus() {
+      document.getElementById('level').innerText = level;
+      document.getElementById('score').innerText = score;
+      document.getElementById('lives').innerText = lives;
+      document.getElementById('lives').parentNode.innerHTML = `الحيوات: \( {'❤️'.repeat(lives)} \){'🖤'.repeat(3-lives)}`;
+    }
 
-<!-- 🔊 صوت طيران -->
-<audio id="flySound">
-  data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=
-</audio>
+    function backToMenu() {
+      document.getElementById('game').classList.add('hidden');
+      document.getElementById('mode-selection').classList.remove('hidden');
+    }
 
-</div>
+    function restartGame() {
+      resetStats();
+      newProblem();
+    }
 
-<script>
-let a,b;
+    function newProblem() {
+      attempts = 0;
+      let maxBase = 30 + (level * 25);
+      num1 = Math.floor(Math.random() * maxBase) + 5;
+      num2 = Math.floor(Math.random() * maxBase) + 5;
 
-function ar(n){
-  const d=['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-  return n.toString().split('').map(x=>d[x]).join('');
-}
+      let ones1 = num1 % 10;
+      let ones2 = num2 % 10;
+      let tens1 = Math.floor(num1 / 10);
+      let tens2 = Math.floor(num2 / 10);
 
-function newQuestion(){
-  a=Math.floor(Math.random()*40)+10;
-  b=Math.floor(Math.random()*40)+10;
+      correctOnes = ones1 + ones2;
+      let carry = Math.floor(correctOnes / 10);
+      correctTens = tens1 + tens2 + carry;
 
-  let aT=Math.floor(a/10), aO=a%10;
-  let bT=Math.floor(b/10), bO=b%10;
+      let problemDiv = document.getElementById('problem');
 
-  document.getElementById("t1").innerText=ar(aT);
-  document.getElementById("o1").innerText=ar(aO);
-  document.getElementById("t2").innerText=ar(bT);
-  document.getElementById("o2").innerText=ar(bO);
+      if (currentMode === 'horizontal') {
+        problemDiv.innerHTML = `${num1} + ${num2} = ؟`;
+      } else {
+        problemDiv.innerHTML = `
+          &nbsp;\( {tens1}&nbsp; \){ones1}<br>
+          + \( {tens2}&nbsp; \){ones2}<br>
+          ─────────<br>
+          ؟
+        `;
+      }
 
-  document.getElementById("tR").innerText="";
-  document.getElementById("oR").innerText="";
-  document.getElementById("carry").style.opacity=0;
-  document.getElementById("answer").value="";
+      document.getElementById('ones').value = '';
+      document.getElementById('tens').value = '';
+      document.getElementById('tens-step').classList.add('hidden');
+      document.getElementById('check').classList.add('hidden');
+      document.getElementById('nextStep').classList.remove('hidden');
+      document.getElementById('hint').classList.add('hidden');
+      document.getElementById('feedback').innerHTML = '';
+      document.getElementById('animation').classList.add('hidden');
+    }
 
-  // ✅ الخطوة الأولى: الشرح
-  document.getElementById("message").innerText =
-    "🔔 نبدأ دائمًا بجمع الآحاد مع الآحاد";
-}
+    function showHint() {
+      let hintText = attempts < 2 
+        ? `الاحاد: ${num1 % 10} + ${num2 % 10} = ؟` 
+        : `مجموع الاحاد ${correctOnes} ثم حمل ${Math.floor(correctOnes/10)} للعشرات`;
+      document.getElementById('hint').innerText = hintText;
+      document.getElementById('hint').classList.remove('hidden');
+    }
 
-function check(){
-  let v=parseInt(document.getElementById("answer").value);
-  let sum=a+b;
+    function loseLife() {
+      lives--;
+      updateStatus();
+      if (lives <= 0) {
+        document.getElementById('game-over').classList.remove('hidden');
+        document.getElementById('final-score').innerText = score;
+        document.getElementById('feedback').innerHTML = 'حاول مرة ثانية يا بطل';
+      } else {
+        document.getElementById('feedback').innerHTML = 'حاول مرة اخرى بعد قليل';
+        setTimeout(newProblem, 1800);
+      }
+    }
 
-  if(v!==sum){
-    document.getElementById("message").innerText="❌ حاول مرة أخرى";
-    return;
-  }
+    function checkOnes() {
+      let ans = parseInt(document.getElementById('ones').value) || -1;
+      attempts++;
 
-  let onesSum=(a%10)+(b%10);
+      if (ans === correctOnes) {
+        document.getElementById('feedback').innerHTML = 'احسنت! الان العشرات';
+        document.getElementById('tens-step').classList.remove('hidden');
+        document.getElementById('check').classList.remove('hidden');
+        document.getElementById('nextStep').classList.add('hidden');
+        document.getElementById('hint').classList.add('hidden');
+      } else {
+        document.getElementById('feedback').innerHTML = attempts < 3 
+          ? 'الاحاد تحتاج تركيز .. جرب مرة ثانية' 
+          : `الاحاد الصح ${correctOnes}`;
+        
+        if (attempts >= 3) {
+          loseLife();
+        }
+      }
+    }
 
-  if(onesSum>=10){
-    // ✅ الخطوة الثانية: الحمل
-    document.getElementById("message").innerText =
-      "✨ المجموع أكبر من ٩ → الواحد يطير إلى العشرات ✈️";
+    function checkTens() {
+      let ans = parseInt(document.getElementById('tens').value) || -1;
 
-    let c=document.getElementById("carry");
-    c.style.opacity=1;
-    c.style.top="25px";
-    c.style.right="175px";
+      if (ans === correctTens) {
+        let points = 10 + level * 3;
+        score += points;
+        updateStatus();
 
-    document.getElementById("flySound").play();
-  }else{
-    document.getElementById("message").innerText =
-      "✅ الآحاد أقل من ١٠، لا يوجد حمل";
-  }
+        let msg = goodWords[Math.floor(Math.random() * goodWords.length)];
+        document.getElementById('feedback').innerHTML = msg;
+        document.getElementById('animation').classList.remove('hidden');
 
-  document.getElementById("oR").innerText=ar(sum%10);
-  document.getElementById("tR").innerText=ar(Math.floor(sum/10));
+        if (score >= level * 60) {
+          level++;
+          document.getElementById('feedback').innerHTML += `<br>مبارك! المستوى ${level} 🔥`;
+        }
 
-  setTimeout(newQuestion,2500);
-}
+        setTimeout(() => {
+          document.getElementById('animation').classList.add('hidden');
+          newProblem();
+        }, 2400);
+      } else {
+        document.getElementById('feedback').innerHTML = attempts < 3 
+          ? 'العشرات قريبة .. حاول مرة اخرى' 
+          : `الصحيح ${correctTens}`;
 
-newQuestion();
-</script>
+        if (attempts >= 3) {
+          loseLife();
+        }
+      }
+    }
 
+    // ربط الازرار
+    document.getElementById('nextStep').onclick = checkOnes;
+    document.getElementById('check').onclick = checkTens;
+    document.getElementById('helpBtn').onclick = showHint;
+  </script>
 </body>
 </html>
